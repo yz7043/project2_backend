@@ -25,10 +25,6 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if ("/login".equals(path) || "/signup".equals(path)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         Optional<AuthUserDetail> authUserDetailOptional = jwtProvider.resolveToken(request); // extract jwt from request, generate a userdetails object
 
         if (authUserDetailOptional.isPresent()){

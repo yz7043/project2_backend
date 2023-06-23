@@ -22,6 +22,10 @@ public class JwtProvider {
 
     public Optional<AuthUserDetail> resolveToken(HttpServletRequest request){
         String prefixedToken = request.getHeader("Authorization"); // extract token value by key "Authorization"
+        if (prefixedToken == null || !prefixedToken.startsWith("Bearer ")) {
+            // handle error or return an empty Optional
+            return Optional.empty();
+        }
         String token = prefixedToken.substring(7); // remove the prefix "Bearer "
 
         Claims claims = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody(); // decode

@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -56,6 +58,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
+                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                .and()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/content/test").permitAll()
@@ -63,5 +67,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/signup").permitAll()
                 .anyRequest()
                 .authenticated();
+//        http
+//                .csrf().disable()
+//                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)) // handle unauthorized requests
+//                .and()
+//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // add JwtFilter
+//                .authorizeRequests()
+//                .antMatchers("/login").permitAll()
+//                .antMatchers("/signup").permitAll()
+//                .anyRequest().authenticated();
     }
 }

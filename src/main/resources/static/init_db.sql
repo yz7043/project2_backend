@@ -28,7 +28,7 @@ create table permission(
 create table order_table(
     order_id BIGINT primary key unique not null auto_increment,
     date_placed DATETIME(6) not null, -- seconds precision decimal 6
-    order_status VARCHAR(255) not null,
+    order_status VARCHAR(255) not null, -- PROCESSING, COMPLETED, CANCELLED
     user_id BIGINT,
 
     foreign key (user_id) references user(user_id)
@@ -63,3 +63,18 @@ create table order_item(
     foreign key (order_id) references order_table(order_id),
     foreign key (product_id) references product(product_id)
 );
+insert into user (user_id, email, password, role, username, icon_url) VALUES
+    (1, 'seller@sdm.com', 'seller', 1, 'seller', 'https://cdn.corporate.walmart.com/dims4/WMT/15870a4/2147483647/strip/true/crop/1224x792+0+0/resize/870x563!/quality/90/?url=https%3A%2F%2Fcdn.corporate.walmart.com%2F0e%2F78%2F1c0917c94ce29c76e21e59934d25%2Flogo-walamrtspark-blue-transparent-background.png');
+
+insert into user (user_id, email, password, role, username) VALUES
+    (2, 'zyx@buy.com', 'zyx', 2, 'zyx');
+
+insert into permission (permission_id, value, user_id) VALUES
+    (1, 'SELLER', 1);
+insert into permission (permission_id, value, user_id) VALUES
+    (2, 'BUYER', 2);
+
+insert into product (product_id, description, name, quantity, retail_price, wholesale_price) VALUES
+    (1, 'Phone designed by Apple', 'iphone13', 200, '700', '500');
+insert into product (product_id, description, name, quantity, retail_price, wholesale_price) VALUES
+    (2, 'Charmin Ultra Strong Clean Touch Toilet Paper', '24 Family Mega Rolls', 50, 35, 20);

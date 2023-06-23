@@ -62,19 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/content/test").permitAll()
-                .antMatchers("/login").permitAll()
-                .antMatchers("/signup").permitAll()
                 .anyRequest()
                 .authenticated();
-//        http
-//                .csrf().disable()
-//                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)) // handle unauthorized requests
-//                .and()
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // add JwtFilter
-//                .authorizeRequests()
-//                .antMatchers("/login").permitAll()
-//                .antMatchers("/signup").permitAll()
-//                .anyRequest().authenticated();
     }
 }

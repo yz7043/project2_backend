@@ -27,7 +27,7 @@ public class UserDao extends AbstractHibernateDao<User>{
         this.add(user);
     }
 
-    @Transactional
+//    @Transactional
     public Optional<User> loadUserByUsername(String username){
         Session session = getCurrentSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();

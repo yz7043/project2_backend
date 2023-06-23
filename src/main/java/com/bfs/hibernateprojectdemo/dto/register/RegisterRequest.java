@@ -1,12 +1,18 @@
-package com.bfs.hibernateprojectdemo.params;
+package com.bfs.hibernateprojectdemo.dto.register;
 
-import com.bfs.hibernateprojectdemo.domain.User;
-import com.bfs.hibernateprojectdemo.dto.base.InputConverter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-public class UserParams implements InputConverter<User> {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class RegisterRequest{
     @NotBlank(message = "Email can't be empty")
     @Size(max = 255, message = "Email length can't exceeds {max}")
     private String email;

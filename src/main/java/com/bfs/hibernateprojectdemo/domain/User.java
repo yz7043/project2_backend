@@ -30,8 +30,7 @@ public class User {
     @Column(name = "icon_url", length = 1000)
     private String iconUrl;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "permission_id")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Permission> permissions = new ArrayList<>();
 

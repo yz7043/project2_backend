@@ -1,24 +1,42 @@
 package com.bfs.hibernateprojectdemo.dao;
 
 import com.bfs.hibernateprojectdemo.domain.User;
+import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Optional;
 
-
+@Repository
 public class UserDao extends AbstractHibernateDao<User>{
+    public UserDao() {setClazz(User.class);}
 
-    @NotBlank(message = "Email can't be empty")
-    @Size(max = 255, message = "Email length can't exceeds {max}")
-    private String email;
+    public User getUserById(int id) {
+        return this.findById(id);
+    }
 
-    @NotBlank(message = "Password can't be empty")
-    @Size(max = 255, message = "Password length can't exceeds {max}")
-    private String password;
+    public List<User> getAllUsers(){
+        return this.getAll();
+    }
 
-    @NotBlank(message = "Username can't be empty")
-    @Size(max = 255, message = "Username length can't exceeds {max}")
-    private String username;
+    public void addUser(User user){
+        this.add(user);
+    }
 
-    private String iconUrl;
+    @Transactional
+    public Optional<User> loadUserByUsername(String username){
+        Session session = getCurrentSession();
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
+        Root<User> root = criteriaQuery.from(User.class);
+        criteriaQuery.select(root);
+        criteriaQuery.where(builder.equal(root.get("username"), username));
+        List<User> users = session.createQuery(criteriaQuery).getResultList();
+        // Hibernate.initialize(user.getPermissions()); to push initialization or specify it as eager
+        return users.stream().filter(user -> user.getUsername().equals(username)).findAny();
+    }
 }

@@ -32,5 +32,6 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
+    @Builder.Default
     private List<OrderItem> orderItems = new ArrayList<>();
 }

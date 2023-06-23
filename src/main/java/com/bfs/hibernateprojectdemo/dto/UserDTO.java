@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 
+
 @Data
 @ToString
 @EqualsAndHashCode
@@ -16,4 +17,6 @@ public class UserDTO {
     private String username;
 
     private String iconUrl;
+
+    private Integer role;
 }

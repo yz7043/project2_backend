@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserAuthService implements UserDetailsService {
     private UserDao userDao;
 
     @Autowired

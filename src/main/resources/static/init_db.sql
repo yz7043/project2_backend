@@ -72,7 +72,7 @@ insert into user (user_id, email, password, role, username) VALUES
 insert into permission (permission_id, value, user_id) VALUES
     (1, 'SELLER', 1);
 insert into permission (permission_id, value, user_id) VALUES
-    (2, 'BUYER', 2);
+    (2, 'USER', 2);
 
 insert into product (product_id, description, name, quantity, retail_price, wholesale_price) VALUES
     (1, 'Phone designed by Apple', 'iphone13', 200, '700', '500');

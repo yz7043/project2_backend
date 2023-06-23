@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 
 @RestController
 public class LoginController {
@@ -36,7 +38,7 @@ public class LoginController {
         this.jwtProvider = jwtProvider;
     }
     @PostMapping("login")
-    public ResponseEntity<LoginUserDTO> login(@RequestBody LoginRequest request){
+    public ResponseEntity<LoginUserDTO> login(@Valid @RequestBody LoginRequest request){
         // TODO: move the logic to Service
         Authentication authentication;
 

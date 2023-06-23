@@ -27,19 +27,25 @@ public class User {
     @Column(name = "username", nullable = false)
     private String username;
 
+    @Column(name = "role", nullable = false)
+    private Integer role;
+
     @Column(name = "icon_url", length = 1000)
     private String iconUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
+    @Builder.Default
     private List<Permission> permissions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
     @ToString.Exclude
+    @Builder.Default
     private List<Order> orders = new ArrayList<>();
 
     @ManyToMany
     @ToString.Exclude
+    @Builder.Default
     @JoinTable(name="watchlist", joinColumns = {@JoinColumn(name = "user_id")},
         inverseJoinColumns = {@JoinColumn(name = "product_id")})
     private List<Product> products = new ArrayList<>();
@@ -53,5 +59,4 @@ public class User {
         products.remove(product);
         product.getUsers().remove(this);
     }
-
 }

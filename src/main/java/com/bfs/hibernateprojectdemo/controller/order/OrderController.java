@@ -4,11 +4,13 @@ import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderSellerDetailResponse;
 import com.bfs.hibernateprojectdemo.dto.order.seller.PagedResponse;
 import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.OrderStatusTransferException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.order.OrderService;
+import com.bfs.hibernateprojectdemo.service.security.UserAuthService;
 import com.bfs.hibernateprojectdemo.utils.AuthUserUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,9 +54,16 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
-    public ResponseEntity<OrderDetailResponse> getOrderDetail(@PathVariable("id") Long orderId) throws ResourceNotFoundException {
-        OrderDetailResponse orderDetail = orderService.getOrderDetail(orderId);
-        return ResponseEntity.ok(orderDetail);
+    public ResponseEntity<?> getOrderDetail(@PathVariable("id") Long orderId) throws ResourceNotFoundException {
+        if(AuthUserUtils.isUser()){
+            OrderDetailResponse orderDetail = orderService.getOrderDetail(orderId);
+            return ResponseEntity.ok(orderDetail);
+        }else if(AuthUserUtils.isSeller()){
+            OrderSellerDetailResponse orderDetail = orderService.getOrderSellerDetail(orderId);
+            return ResponseEntity.ok(orderDetail);
+        }else{
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PatchMapping("/{id}/cancel")

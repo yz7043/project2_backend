@@ -9,10 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/*
+* Only for logged-in user with JWT token
+* */
 public class AuthUserUtils {
-    /*
-    * Only for logged-in user with JWT token
-    * */
     public static AuthUserDetail getLoginUser(){
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();

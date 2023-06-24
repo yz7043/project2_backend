@@ -9,9 +9,7 @@ import com.bfs.hibernateprojectdemo.dto.order.OrderItemRequest;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.dto.order.UserOrderDTO;
-import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
-import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderItemDetailDTO;
-import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderProductDetailDTO;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.*;
 import com.bfs.hibernateprojectdemo.dto.order.seller.PagedOrder;
 import com.bfs.hibernateprojectdemo.dto.order.seller.PagedResponse;
 import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
@@ -130,6 +128,38 @@ public class OrderService {
         }
         return OrderDetailResponse.builder()
                 .id(order.getId())
+                .orderStatus(order.getStatus())
+                .datePlaced(order.getDatePlaced())
+                .orderItems(orderItemDetailDTOS)
+                .status(StatusResponse.builder().success(true).message("Found!").build())
+                .build();
+    }
+
+    @Transactional
+    public OrderSellerDetailResponse getOrderSellerDetail(Long orderId) throws ResourceNotFoundException {
+        Order order = orderDao.getById(orderId);
+        if(order == null)
+            throw new ResourceNotFoundException("Order not found!");
+        List<OrderItem> orderItems = order.getOrderItems();
+        List<OrderItemSellerDetailDTO> orderItemDetailDTOS = new LinkedList<>();
+        for(OrderItem orderItem : orderItems){
+            OrderItemSellerDetailDTO orderItemDetail = OrderItemSellerDetailDTO.builder()
+                    .id(orderItem.getId())
+                    .purchasedPrice(orderItem.getPurchasedPrice())
+                    .wholesalePrices(orderItem.getWholesalePrice())
+                    .quantity(orderItem.getQuantity())
+                    .product(OrderProductSellerDetailDTO.builder()
+                            .id(orderItem.getProduct().getId())
+                            .name(orderItem.getProduct().getName())
+                            .description(orderItem.getProduct().getDescription())
+                            .retailPrice(orderItem.getProduct().getRetailPrice())
+                            .wholesalePrice(orderItem.getProduct().getWholesalePrice())
+                            .build())
+                    .build();
+            orderItemDetailDTOS.add(orderItemDetail);
+        }
+        return OrderSellerDetailResponse.builder()
+                .id(orderId)
                 .orderStatus(order.getStatus())
                 .datePlaced(order.getDatePlaced())
                 .orderItems(orderItemDetailDTOS)

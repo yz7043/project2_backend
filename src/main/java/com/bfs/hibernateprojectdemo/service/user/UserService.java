@@ -22,6 +22,7 @@ public class UserService {
         this.userDao = userDao;
     }
 
+    @Transactional
     public void registerUser(RegisterRequest request){
         String username = request.getUsername();
         String email = request.getEmail();

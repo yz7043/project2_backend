@@ -1,13 +1,9 @@
 package com.bfs.hibernateprojectdemo.dao;
 
 import com.bfs.hibernateprojectdemo.domain.User;
-import lombok.val;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -54,10 +50,9 @@ public class UserDao extends AbstractHibernateDao<User>{
         return users.stream().filter(user -> user.getEmail().equals(email)).findAny();
     }
 
+    @Transactional
     public void createUser(User user){
         Session session = sessionFactory.getCurrentSession();
-        Transaction transaction = session.beginTransaction();
         session.save(user);
-        transaction.commit();
     }
 }

@@ -50,4 +50,10 @@ public class OrderDao extends AbstractHibernateDao<Order>{
     public Order getById(Long orderId) {
         return this.findById(orderId);
     }
+
+    @Transactional
+    public void updateOrder(Order order){
+        Session session = sessionFactory.getCurrentSession();
+        session.update(order);
+    }
 }

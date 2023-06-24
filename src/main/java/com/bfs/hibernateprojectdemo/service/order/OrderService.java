@@ -13,6 +13,7 @@ import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderItemDetailDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderProductDetailDTO;
 import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
+import com.bfs.hibernateprojectdemo.exception.OrderStatusTransferException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.security.AuthUserDetail;
 import com.bfs.hibernateprojectdemo.utils.DateUtils;
@@ -131,5 +132,27 @@ public class OrderService {
                 .orderItems(orderItemDetailDTOS)
                 .status(StatusResponse.builder().success(true).message("Found!").build())
                 .build();
+    }
+
+    @Transactional
+    public void cancelOrderUserByOrderId(Long id)
+            throws OrderStatusTransferException, ResourceNotFoundException {
+        Order order = orderDao.getById(id);
+        AuthUserDetail loginUser = getLoginUser();
+        // order doesn't exist or order no belong to this user -> both not found
+        if(order == null || !order.getUser().getUsername().equals(loginUser.getUsername()))
+            throw new ResourceNotFoundException("Order not found!");
+        if(!order.getStatus().equals(DomainConst.ORDER_PROCESSING))
+            throw new OrderStatusTransferException("Cannot cancel - Bad status!");
+
+        // no need to call dao.update
+        // since order and product are in the session context
+        // they are persistent entities
+        order.setStatus(DomainConst.ORDER_CANCELLED);
+        for(OrderItem orderItem : order.getOrderItems()){
+            Product product = orderItem.getProduct();
+            int quantity = orderItem.getQuantity();
+            product.setQuantity(product.getQuantity() + quantity);
+        }
     }
 }

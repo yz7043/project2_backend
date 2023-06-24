@@ -55,4 +55,7 @@ public class UserDao extends AbstractHibernateDao<User>{
         Session session = sessionFactory.getCurrentSession();
         session.save(user);
     }
+
+
+
 }

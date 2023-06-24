@@ -5,6 +5,7 @@ import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
 import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
+import com.bfs.hibernateprojectdemo.exception.OrderStatusTransferException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.order.OrderService;
 import org.springframework.http.HttpStatus;
@@ -44,5 +45,14 @@ public class OrderController {
     public ResponseEntity<OrderDetailResponse> getOrderDetail(@PathVariable("id") Long orderId) throws ResourceNotFoundException {
         OrderDetailResponse orderDetail = orderService.getOrderDetail(orderId);
         return ResponseEntity.ok(orderDetail);
+    }
+
+    @PatchMapping("/{id}/cancel")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<BaseSuccessResponse> cancelOrder(@PathVariable("id") Long orderId) {
+        orderService.cancelOrderUserByOrderId(orderId);
+        return ResponseEntity.ok(BaseSuccessResponse.builder()
+                .message("Cancelled successfully!")
+                .build());
     }
 }

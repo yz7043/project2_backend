@@ -1,5 +1,6 @@
 package com.bfs.hibernateprojectdemo.controller.order;
 
+import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
@@ -30,8 +31,9 @@ public class OrderController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity placeOrder(@Valid @RequestBody OrderRequest request) throws PlaceOrderException {
+    public ResponseEntity<BaseSuccessResponse> placeOrder(@Valid @RequestBody OrderRequest request) throws PlaceOrderException {
         orderService.placeOrder(request);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(BaseSuccessResponse.builder().message("Order has been placed!").build()
+                , HttpStatus.CREATED);
     }
 }

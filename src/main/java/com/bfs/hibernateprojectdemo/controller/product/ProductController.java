@@ -4,6 +4,7 @@ import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.common.StatusResponse;
 import com.bfs.hibernateprojectdemo.dto.product.AddProductRequest;
 import com.bfs.hibernateprojectdemo.dto.product.InStockProductsResponse;
+import com.bfs.hibernateprojectdemo.dto.product.UpdateProductRequest;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyDTO;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyResponse;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -86,5 +88,14 @@ public class ProductController {
         productService.addProduct(request);
         return new ResponseEntity<>(BaseSuccessResponse.builder().message("success!").build(),
                 HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public ResponseEntity<BaseSuccessResponse> updateProduct(@Valid @RequestBody UpdateProductRequest request,
+                                                             @PathVariable("id") Long productId){
+        productService.updateProduct(productId, request);
+        return new ResponseEntity<>(BaseSuccessResponse.builder().message("success!").build(),
+                HttpStatus.OK);
     }
 }

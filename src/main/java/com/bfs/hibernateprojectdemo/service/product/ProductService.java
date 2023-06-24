@@ -4,6 +4,7 @@ import com.bfs.hibernateprojectdemo.dao.ProductDao;
 import com.bfs.hibernateprojectdemo.dao.UserDao;
 import com.bfs.hibernateprojectdemo.domain.Product;
 import com.bfs.hibernateprojectdemo.dto.product.AddProductRequest;
+import com.bfs.hibernateprojectdemo.dto.product.UpdateProductRequest;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyDTO;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
@@ -60,5 +61,15 @@ public class ProductService {
                 .quantity(request.getQuantity())
                 .build();
         productDao.add(product);
+    }
+
+    @Transactional
+    public void updateProduct(Long productId, UpdateProductRequest request){
+        Product product = productDao.getProductById(productId);
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setWholesalePrice(request.getWholesalePrice());
+        product.setRetailPrice(request.getRetailPrice());
+        product.setQuantity(request.getQuantity());
     }
 }

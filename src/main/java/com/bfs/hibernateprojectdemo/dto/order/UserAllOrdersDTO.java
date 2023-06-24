@@ -1,4 +1,4 @@
-package com.bfs.hibernateprojectdemo.dto.product;
+package com.bfs.hibernateprojectdemo.dto.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class InStockProductsResponse {
-    private List<UserProductDTO> products;
+public class UserAllOrdersDTO {
+    List<UserOrderDTO> orders;
 }

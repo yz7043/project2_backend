@@ -1,6 +1,7 @@
 package com.bfs.hibernateprojectdemo.aop;
 
 import com.bfs.hibernateprojectdemo.dto.error.BaseErrorResponse;
+import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
 import com.bfs.hibernateprojectdemo.exception.ProductNotFoundException;
 import com.bfs.hibernateprojectdemo.exception.UserExistedException;
 import org.springframework.http.HttpStatus;
@@ -49,5 +50,10 @@ public class ExceptionHandlerAOP {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<Object> handlerProductNotFoundException(ProductNotFoundException e){
         return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PlaceOrderException.class)
+    public ResponseEntity<Object> handlerPlaceOrderException(PlaceOrderException e){
+        return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
     }
 }

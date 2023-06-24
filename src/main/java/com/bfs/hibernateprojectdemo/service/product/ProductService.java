@@ -3,6 +3,7 @@ package com.bfs.hibernateprojectdemo.service.product;
 import com.bfs.hibernateprojectdemo.dao.ProductDao;
 import com.bfs.hibernateprojectdemo.dao.UserDao;
 import com.bfs.hibernateprojectdemo.domain.Product;
+import com.bfs.hibernateprojectdemo.dto.product.AddProductRequest;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyDTO;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
@@ -11,6 +12,7 @@ import com.bfs.hibernateprojectdemo.utils.AuthUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,4 +50,15 @@ public class ProductService {
                 .build();
     }
 
+    @Transactional
+    public void addProduct(AddProductRequest request){
+        Product product = Product.builder()
+                .description(request.getDescription())
+                .name(request.getName())
+                .wholesalePrice(request.getWholesalePrice())
+                .retailPrice(request.getRetailPrice())
+                .quantity(request.getQuantity())
+                .build();
+        productDao.add(product);
+    }
 }

@@ -4,7 +4,7 @@ import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
-import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
+import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.order.OrderService;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class OrderController {
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<BaseSuccessResponse> placeOrder(@Valid @RequestBody OrderRequest request) throws PlaceOrderException {
+    public ResponseEntity<BaseSuccessResponse> placeOrder(@Valid @RequestBody OrderRequest request) throws NotEnoughInventoryException {
         orderService.placeOrder(request);
         return new ResponseEntity(BaseSuccessResponse.builder().message("Order has been placed!").build()
                 , HttpStatus.CREATED);

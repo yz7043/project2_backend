@@ -1,7 +1,7 @@
 package com.bfs.hibernateprojectdemo.aop;
 
 import com.bfs.hibernateprojectdemo.dto.error.BaseErrorResponse;
-import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
+import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.exception.UserExistedException;
 import org.springframework.http.HttpStatus;
@@ -52,8 +52,8 @@ public class ExceptionHandlerAOP {
         return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(PlaceOrderException.class)
-    public ResponseEntity<Object> handlerPlaceOrderException(PlaceOrderException e){
+    @ExceptionHandler(NotEnoughInventoryException.class)
+    public ResponseEntity<Object> handlerPlaceOrderException(NotEnoughInventoryException e){
         return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
     }
 }

@@ -12,11 +12,10 @@ import com.bfs.hibernateprojectdemo.dto.order.UserOrderDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderItemDetailDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderProductDetailDTO;
-import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
+import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.security.AuthUserDetail;
 import com.bfs.hibernateprojectdemo.utils.DateUtils;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -71,7 +70,7 @@ public class OrderService {
     }
 
     @Transactional
-    public void placeOrder(OrderRequest request) throws PlaceOrderException {
+    public void placeOrder(OrderRequest request) throws NotEnoughInventoryException {
         AuthUserDetail loginUser = getLoginUser();
         User user = userDao.loadUserByUsername(loginUser.getUsername()).get();
         List<OrderItemRequest> items = request.getOrder();
@@ -85,10 +84,10 @@ public class OrderService {
             Integer quantity = item.getQuantity();
             Product product = productDao.getProductById(productId);
             if(product == null){
-                throw new PlaceOrderException("No such product: " + product.getName() + "!");
+                throw new NotEnoughInventoryException("No such product: " + product.getName() + "!");
             }
             if(product.getQuantity() < quantity){
-                throw new PlaceOrderException("Not enough " + product.getName() + "!");
+                throw new NotEnoughInventoryException("Not enough " + product.getName() + "!");
             }
             OrderItem orderItem = OrderItem.builder()
                                     .purchasedPrice(product.getRetailPrice())

@@ -12,6 +12,8 @@ import com.bfs.hibernateprojectdemo.dto.order.UserOrderDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderItemDetailDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderProductDetailDTO;
+import com.bfs.hibernateprojectdemo.dto.order.seller.PagedOrder;
+import com.bfs.hibernateprojectdemo.dto.order.seller.PagedResponse;
 import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.OrderStatusTransferException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
@@ -27,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -154,5 +157,24 @@ public class OrderService {
             int quantity = orderItem.getQuantity();
             product.setQuantity(product.getQuantity() + quantity);
         }
+    }
+
+    @Transactional
+    public PagedResponse getAllOrder(int page){
+        PagedOrder pagedOrders = orderDao.getPagedOrders(page, DomainConst.PAGE_SIZE);
+        List<UserOrderDTO> userOrderDTOS = pagedOrders.getOrders().stream()
+                .map(order -> UserOrderDTO.builder()
+                        .orderId(order.getId())
+                        .datePlaced(order.getDatePlaced())
+                        .status(order.getStatus())
+                        .username(order.getUser().getUsername())
+                        .userId(order.getUser().getId())
+                        .build()).collect(Collectors.toList());
+        PagedResponse result = PagedResponse.builder()
+                .totalPages((int) Math.ceil((double) pagedOrders.getTotalPages() / DomainConst.PAGE_SIZE))
+                .currentPage(page)
+                .orders(userOrderDTOS)
+                .build();
+        return result;
     }
 }

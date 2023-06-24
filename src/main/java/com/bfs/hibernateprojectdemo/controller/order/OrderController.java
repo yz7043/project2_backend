@@ -4,6 +4,7 @@ import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
+import com.bfs.hibernateprojectdemo.dto.order.seller.PagedResponse;
 import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.OrderStatusTransferException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
@@ -11,6 +12,8 @@ import com.bfs.hibernateprojectdemo.service.order.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,11 +28,17 @@ public class OrderController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<UserAllOrdersDTO> getUserAllOrders(){
-        // TODO: to be tested
-        UserAllOrdersDTO userAllOrders = orderService.getUserAllOrders();
-        return ResponseEntity.ok(userAllOrders);
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
+    public ResponseEntity<?> getUserAllOrders(@RequestParam(defaultValue = "0") int page){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userRole = userDetails.getAuthorities().toArray()[0].toString();
+        if("USER".equals(userRole)){
+            UserAllOrdersDTO userAllOrders = orderService.getUserAllOrders();
+            return ResponseEntity.ok(userAllOrders);
+        }else{
+            PagedResponse allOrder = orderService.getAllOrder(page);
+            return ResponseEntity.ok(allOrder);
+        }
     }
 
     @PostMapping("")
@@ -55,4 +64,5 @@ public class OrderController {
                 .message("Cancelled successfully!")
                 .build());
     }
+
 }

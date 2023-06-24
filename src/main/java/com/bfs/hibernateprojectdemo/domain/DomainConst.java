@@ -10,4 +10,6 @@ public class DomainConst {
 
     public static final Integer USER_ROLE = 1;
     public static final Integer SELLER_ROLE = 2;
+
+    public static final Integer PAGE_SIZE = 5;
 }

@@ -62,4 +62,9 @@ public class ExceptionHandlerAOP {
     public ResponseEntity<Object> handleOrderStatusTransferException(OrderStatusTransferException e){
         return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException e){
+        return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
+    }
 }

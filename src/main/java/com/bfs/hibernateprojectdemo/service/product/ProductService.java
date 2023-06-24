@@ -3,7 +3,7 @@ package com.bfs.hibernateprojectdemo.service.product;
 import com.bfs.hibernateprojectdemo.dao.ProductDao;
 import com.bfs.hibernateprojectdemo.domain.Product;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
-import com.bfs.hibernateprojectdemo.exception.ProductNotFoundException;
+import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,10 +31,10 @@ public class ProductService {
                         .build()).collect(Collectors.toList());
     }
 
-    public UserProductDTO getProductById(Long id) throws ProductNotFoundException {
+    public UserProductDTO getProductById(Long id) throws ResourceNotFoundException {
         Product product = productDao.getProductById(id);
         if(product == null)
-            throw new ProductNotFoundException("Cannot find product with id " + id);
+            throw new ResourceNotFoundException("Cannot find product with id " + id);
         return UserProductDTO.builder()
                 .id(product.getId())
                 .description(product.getDescription())

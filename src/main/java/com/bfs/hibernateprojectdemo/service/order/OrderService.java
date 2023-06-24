@@ -4,13 +4,19 @@ import com.bfs.hibernateprojectdemo.dao.OrderDao;
 import com.bfs.hibernateprojectdemo.dao.ProductDao;
 import com.bfs.hibernateprojectdemo.dao.UserDao;
 import com.bfs.hibernateprojectdemo.domain.*;
+import com.bfs.hibernateprojectdemo.dto.common.StatusResponse;
 import com.bfs.hibernateprojectdemo.dto.order.OrderItemRequest;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
 import com.bfs.hibernateprojectdemo.dto.order.UserOrderDTO;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderItemDetailDTO;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderProductDetailDTO;
 import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
+import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.security.AuthUserDetail;
 import com.bfs.hibernateprojectdemo.utils.DateUtils;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +25,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -95,5 +102,35 @@ public class OrderService {
             productDao.updateProduct(product);
         }
         orderDao.addOrder(order);
+    }
+
+    @Transactional
+    public OrderDetailResponse getOrderDetail(Long orderId) throws ResourceNotFoundException {
+        Order order = orderDao.getById(orderId);
+        if(order == null)
+            throw new ResourceNotFoundException("Order not found!");
+        List<OrderItem> orderItems = order.getOrderItems();
+        List<OrderItemDetailDTO> orderItemDetailDTOS = new LinkedList<>();
+        for(OrderItem orderItem : orderItems){
+            OrderItemDetailDTO orderItemDetail = OrderItemDetailDTO.builder()
+                    .id(orderItem.getId())
+                    .purchasedPrice(orderItem.getPurchasedPrice())
+                    .quantity(orderItem.getQuantity())
+                    .product(OrderProductDetailDTO.builder()
+                            .id(orderItem.getProduct().getId())
+                            .name(orderItem.getProduct().getName())
+                            .description(orderItem.getProduct().getDescription())
+                            .retailPrice(orderItem.getProduct().getRetailPrice())
+                            .build())
+                    .build();
+            orderItemDetailDTOS.add(orderItemDetail);
+        }
+        return OrderDetailResponse.builder()
+                .id(order.getId())
+                .orderStatus(order.getStatus())
+                .datePlaced(order.getDatePlaced())
+                .orderItems(orderItemDetailDTOS)
+                .status(StatusResponse.builder().success(true).message("Found!").build())
+                .build();
     }
 }

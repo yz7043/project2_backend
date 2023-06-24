@@ -2,6 +2,7 @@ package com.bfs.hibernateprojectdemo.dao;
 
 import com.bfs.hibernateprojectdemo.domain.Order;
 import com.bfs.hibernateprojectdemo.domain.User;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -44,5 +45,9 @@ public class OrderDao extends AbstractHibernateDao<Order>{
     public void addOrder(Order order){
         Session session = getCurrentSession();
         session.save(order);
+    }
+
+    public Order getById(Long orderId) {
+        return this.findById(orderId);
     }
 }

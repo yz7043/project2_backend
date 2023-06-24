@@ -3,7 +3,9 @@ package com.bfs.hibernateprojectdemo.controller.order;
 import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.order.OrderRequest;
 import com.bfs.hibernateprojectdemo.dto.order.UserAllOrdersDTO;
+import com.bfs.hibernateprojectdemo.dto.order.orderdetail.OrderDetailResponse;
 import com.bfs.hibernateprojectdemo.exception.PlaceOrderException;
+import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.order.OrderService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,5 +37,12 @@ public class OrderController {
         orderService.placeOrder(request);
         return new ResponseEntity(BaseSuccessResponse.builder().message("Order has been placed!").build()
                 , HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('USER')")
+    public ResponseEntity<OrderDetailResponse> getOrderDetail(@PathVariable("id") Long orderId) throws ResourceNotFoundException {
+        OrderDetailResponse orderDetail = orderService.getOrderDetail(orderId);
+        return ResponseEntity.ok(orderDetail);
     }
 }

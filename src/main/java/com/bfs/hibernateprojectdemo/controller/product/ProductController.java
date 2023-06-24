@@ -2,7 +2,7 @@ package com.bfs.hibernateprojectdemo.controller.product;
 
 import com.bfs.hibernateprojectdemo.dto.product.InStockProductsResponse;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
-import com.bfs.hibernateprojectdemo.exception.ProductNotFoundException;
+import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class ProductController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('USER')")
     public ResponseEntity<UserProductDTO> getProductById(@PathVariable("id") Long id)
-            throws ProductNotFoundException {
+            throws ResourceNotFoundException {
         UserProductDTO product = productService.getProductById(id);
         return ResponseEntity.ok(product);
     }

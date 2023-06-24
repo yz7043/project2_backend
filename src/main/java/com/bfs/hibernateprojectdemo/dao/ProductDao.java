@@ -6,6 +6,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
@@ -22,4 +23,9 @@ public class ProductDao extends AbstractHibernateDao<Product>{
         return this.findById(id);
     }
 
+    @Transactional
+    public void updateProduct(Product product){
+        Session session = sessionFactory.getCurrentSession();
+        session.update(product);
+    }
 }

@@ -24,6 +24,7 @@ public class OrderDao extends AbstractHibernateDao<Order>{
         return super.getAll();
     }
 
+    @Transactional
     public List<Order> getAllByUsername(String username){
         Session session = getCurrentSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();

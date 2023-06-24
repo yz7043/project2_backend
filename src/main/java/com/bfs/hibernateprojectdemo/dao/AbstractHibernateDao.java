@@ -30,6 +30,10 @@ public abstract class AbstractHibernateDao<T> {
         return getCurrentSession().get(clazz, id);
     }
 
+    public T findById(long id) {
+        return getCurrentSession().get(clazz, id);
+    }
+
     public void add(T item) {
         getCurrentSession().save(item);
     }

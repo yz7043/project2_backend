@@ -1,6 +1,7 @@
 package com.bfs.hibernateprojectdemo.aop;
 
 import com.bfs.hibernateprojectdemo.dto.error.BaseErrorResponse;
+import com.bfs.hibernateprojectdemo.exception.ProductNotFoundException;
 import com.bfs.hibernateprojectdemo.exception.UserExistedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,14 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ExceptionHandlerAOP {
-    @ExceptionHandler(value = {Exception.class})
-    public ResponseEntity handleException(Exception e){
-        return new ResponseEntity(BaseErrorResponse.builder().message("Base Exception: " + e.getMessage()).build(), HttpStatus.OK);
-    }
+//    @ExceptionHandler(value = {Exception.class})
+//    public ResponseEntity handleException(Exception e){
+//        return new ResponseEntity(BaseErrorResponse.builder().message("Base Exception: " + e.getMessage()).build(), HttpStatus.OK);
+//    }
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity handlerBadCredentialsException(BadCredentialsException e){
-        return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -42,6 +43,11 @@ public class ExceptionHandlerAOP {
 
     @ExceptionHandler(UserExistedException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValid(UserExistedException e){
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<Object> handlerProductNotFoundException(ProductNotFoundException e){
+        return new ResponseEntity<>(BaseErrorResponse.builder().message(e.getMessage()).build(), HttpStatus.NOT_FOUND);
     }
 }

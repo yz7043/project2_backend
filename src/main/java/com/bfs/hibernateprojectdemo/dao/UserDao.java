@@ -19,7 +19,7 @@ import java.util.Optional;
 public class UserDao extends AbstractHibernateDao<User>{
     public UserDao() {setClazz(User.class);}
 
-    public User getUserById(int id) {
+    public User getUserById(Long id) {
         return this.findById(id);
     }
 

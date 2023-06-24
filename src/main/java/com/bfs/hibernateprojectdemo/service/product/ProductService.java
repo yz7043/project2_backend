@@ -1,9 +1,13 @@
 package com.bfs.hibernateprojectdemo.service.product;
 
 import com.bfs.hibernateprojectdemo.dao.ProductDao;
+import com.bfs.hibernateprojectdemo.dao.UserDao;
 import com.bfs.hibernateprojectdemo.domain.Product;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
+import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyDTO;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
+import com.bfs.hibernateprojectdemo.security.AuthUserDetail;
+import com.bfs.hibernateprojectdemo.utils.AuthUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,4 +47,5 @@ public class ProductService {
                 .retailPrice(product.getRetailPrice())
                 .build();
     }
+
 }

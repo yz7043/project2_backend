@@ -67,11 +67,26 @@ public class OrderController {
     }
 
     @PatchMapping("/{id}/cancel")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
     public ResponseEntity<BaseSuccessResponse> cancelOrder(@PathVariable("id") Long orderId) {
-        orderService.cancelOrderUserByOrderId(orderId);
+        if(AuthUserUtils.isUser())
+            orderService.cancelOrderUserByOrderId(orderId);
+        else if(AuthUserUtils.isSeller()){
+            orderService.cancelOrderSellerByOrderID(orderId);
+        }else{
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         return ResponseEntity.ok(BaseSuccessResponse.builder()
                 .message("Cancelled successfully!")
+                .build());
+    }
+
+    @PatchMapping("/{id}/complete")
+    @PreAuthorize("hasAuthority('SELLER')")
+    public ResponseEntity<BaseSuccessResponse> completeOrder(@PathVariable("id") Long orderId){
+        orderService.completeOrderSellerByOrderID(orderId);
+        return ResponseEntity.ok(BaseSuccessResponse.builder()
+                .message("Change to complete successfully!")
                 .build());
     }
 }

@@ -190,6 +190,22 @@ public class OrderService {
     }
 
     @Transactional
+    public void cancelOrderSellerByOrderID(Long id) throws ResourceNotFoundException,
+            OrderStatusTransferException{
+        Order order = orderDao.getById(id);
+        if(order == null)
+            throw new ResourceNotFoundException("Order not found");
+        if(!order.getStatus().equals(DomainConst.ORDER_PROCESSING))
+            throw new OrderStatusTransferException("Cannot cancel - Bad status!");
+        order.setStatus(DomainConst.ORDER_CANCELLED);
+        for(OrderItem orderItem : order.getOrderItems()){
+            Product product = orderItem.getProduct();
+            int quantity = orderItem.getQuantity();
+            product.setQuantity(product.getQuantity() + quantity);
+        }
+    }
+
+    @Transactional
     public PagedResponse getAllOrder(int page){
         PagedOrder pagedOrders = orderDao.getPagedOrders(page, DomainConst.PAGE_SIZE);
         List<UserOrderDTO> userOrderDTOS = pagedOrders.getOrders().stream()
@@ -206,5 +222,16 @@ public class OrderService {
                 .orders(userOrderDTOS)
                 .build();
         return result;
+    }
+
+    @Transactional
+    public void completeOrderSellerByOrderID(Long id) throws ResourceNotFoundException,
+            OrderStatusTransferException{
+        Order order = orderDao.getById(id);
+        if(order == null)
+            throw new ResourceNotFoundException("Order not found");
+        if(!order.getStatus().equals(DomainConst.ORDER_PROCESSING))
+            throw new OrderStatusTransferException("Cannot cancel - Bad status!");
+        order.setStatus(DomainConst.ORDER_COMPLETED);
     }
 }

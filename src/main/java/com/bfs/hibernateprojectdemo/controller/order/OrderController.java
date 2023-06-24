@@ -9,6 +9,7 @@ import com.bfs.hibernateprojectdemo.exception.NotEnoughInventoryException;
 import com.bfs.hibernateprojectdemo.exception.OrderStatusTransferException;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.order.OrderService;
+import com.bfs.hibernateprojectdemo.utils.AuthUserUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,15 +31,15 @@ public class OrderController {
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
     public ResponseEntity<?> getUserAllOrders(@RequestParam(defaultValue = "0") int page){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String userRole = userDetails.getAuthorities().toArray()[0].toString();
-        if("USER".equals(userRole)){
+
+        if(AuthUserUtils.isUser()){
             UserAllOrdersDTO userAllOrders = orderService.getUserAllOrders();
             return ResponseEntity.ok(userAllOrders);
-        }else{
+        }else if(AuthUserUtils.isSeller()){
             PagedResponse allOrder = orderService.getAllOrder(page);
             return ResponseEntity.ok(allOrder);
         }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
     @PostMapping("")
@@ -50,7 +51,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
     public ResponseEntity<OrderDetailResponse> getOrderDetail(@PathVariable("id") Long orderId) throws ResourceNotFoundException {
         OrderDetailResponse orderDetail = orderService.getOrderDetail(orderId);
         return ResponseEntity.ok(orderDetail);

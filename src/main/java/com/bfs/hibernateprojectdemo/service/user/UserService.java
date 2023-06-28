@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,13 @@ public class UserService {
         this.productDao = productDao;
     }
 
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder){
+        this.passwordEncoder = passwordEncoder;
+    }
+
     private AuthUserDetail getLoginUser(){
         UsernamePasswordAuthenticationToken authentication =
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
@@ -64,7 +72,7 @@ public class UserService {
             throw new UserExistedException("Email has been used!");
         User user = User.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .email(email)
                 .iconUrl(iconUrl)
                 .role(DomainConst.USER_ROLE)

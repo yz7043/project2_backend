@@ -61,6 +61,7 @@ public class LoginController {
         LoginUserDTO loggedUser = LoginUserDTO.builder()
                 .message("Welcome " + authUserDetail.getUsername())
                 .token(token)
+                .permission(authentication.getAuthorities().stream().map(a -> a.getAuthority()).toArray(String[]::new)[0])
                 .build();
         return ResponseEntity.ok(loggedUser);
     }

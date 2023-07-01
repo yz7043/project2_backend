@@ -12,4 +12,5 @@ import lombok.ToString;
 public class LoginUserDTO {
     private String message;
     private String token;
+    private String permission;
 }

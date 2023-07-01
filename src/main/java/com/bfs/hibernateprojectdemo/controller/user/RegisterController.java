@@ -1,5 +1,6 @@
 package com.bfs.hibernateprojectdemo.controller.user;
 
+import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.register.RegisterRequest;
 import com.bfs.hibernateprojectdemo.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class RegisterController {
     }
 
     @PostMapping("signup")
-    public ResponseEntity<String> signup(@Valid @RequestBody RegisterRequest request){
+    public ResponseEntity<BaseSuccessResponse> signup(@Valid @RequestBody RegisterRequest request){
         userService.registerUser(request);
-        return ResponseEntity.ok("Signed up successfully!");
+        return ResponseEntity.ok(BaseSuccessResponse.builder().message("Signed up successfully!").build());
     }
 }

@@ -175,7 +175,14 @@ public class UserService {
         }
         List<ProductFrequencyDTO> result = new LinkedList<>(productCounter.values());
         Collections.sort(result,
-                (p1, p2) -> p2.getFrequency().compareTo(p1.getFrequency()));
+                (p1, p2) -> {
+                    int frequencyCompare = p2.getFrequency().compareTo(p1.getFrequency());
+                    if (frequencyCompare != 0) {
+                        return frequencyCompare;
+                    } else {
+                        return p1.getProductId().compareTo(p2.getProductId());
+                    }
+                });
         if(result.isEmpty())
             return result;
         return result.subList(0, Math.min(limit, result.size()));
@@ -209,7 +216,14 @@ public class UserService {
             }
         }
         List<ProductRecentDto> result = new ArrayList<>(productDic.values());
-        result.sort((o1, o2) -> o2.getDatePurchased().compareTo(o1.getDatePurchased()));
+        result.sort((o1, o2) -> {
+            int dateCompare = o2.getDatePurchased().compareTo(o1.getDatePurchased());
+            if (dateCompare != 0) {
+                return dateCompare;
+            } else {
+                return o1.getProductId().compareTo(o2.getProductId());
+            }
+        });
         return result.subList(0, Math.min(limit, result.size()));
     }
 }

@@ -13,6 +13,6 @@ public class OrderItemSellerDetailDTO {
     private Long id; // order item id
     private Double purchasedPrice;
     private Integer quantity;
-    private Double wholesalePrices;
+    private Double wholesalePrice;
     private OrderProductSellerDetailDTO product;
 }

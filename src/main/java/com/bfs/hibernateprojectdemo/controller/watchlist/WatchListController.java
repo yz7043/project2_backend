@@ -54,8 +54,8 @@ public class WatchListController {
 
     @DeleteMapping("product/{id}")
     @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity deleteFromWatchList(@PathVariable("id") Long productId){
+    public ResponseEntity<BaseSuccessResponse> deleteFromWatchList(@PathVariable("id") Long productId){
         userService.deleteProductFromWatchList(productId);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity(BaseSuccessResponse.builder().message("Deleted!").build(), HttpStatus.OK);
     }
 }

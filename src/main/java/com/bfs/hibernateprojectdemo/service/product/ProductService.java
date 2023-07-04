@@ -26,6 +26,7 @@ public class ProductService {
         this.productDao = productDao;
     }
 
+    @Transactional
     public List<UserProductDTO> getAllProductForUser(){
         List<Product> products = productDao.getAllProduct();
         return products.stream().filter(product -> product.getQuantity() > 0)

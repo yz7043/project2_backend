@@ -146,7 +146,7 @@ public class OrderService {
             OrderItemSellerDetailDTO orderItemDetail = OrderItemSellerDetailDTO.builder()
                     .id(orderItem.getId())
                     .purchasedPrice(orderItem.getPurchasedPrice())
-                    .wholesalePrices(orderItem.getWholesalePrice())
+                    .wholesalePrice(orderItem.getWholesalePrice())
                     .quantity(orderItem.getQuantity())
                     .product(OrderProductSellerDetailDTO.builder()
                             .id(orderItem.getProduct().getId())

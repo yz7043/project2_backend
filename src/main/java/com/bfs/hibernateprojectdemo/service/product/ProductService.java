@@ -4,6 +4,7 @@ import com.bfs.hibernateprojectdemo.dao.ProductDao;
 import com.bfs.hibernateprojectdemo.dao.UserDao;
 import com.bfs.hibernateprojectdemo.domain.Product;
 import com.bfs.hibernateprojectdemo.dto.product.AddProductRequest;
+import com.bfs.hibernateprojectdemo.dto.product.AdminProductDTO;
 import com.bfs.hibernateprojectdemo.dto.product.UpdateProductRequest;
 import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyDTO;
@@ -39,6 +40,22 @@ public class ProductService {
                         .build()).collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<AdminProductDTO> getAllProductForAdmin(){
+        List<Product> products = productDao.getAllProduct();
+        return products.stream()
+                .map(product -> AdminProductDTO.builder()
+                    .id(product.getId())
+                    .description(product.getDescription())
+                    .quantity(product.getQuantity())
+                    .retailPrice(product.getRetailPrice())
+                    .wholesalePrice(product.getWholesalePrice())
+                    .name(product.getName())
+                    .build())
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public UserProductDTO getProductById(Long id) throws ResourceNotFoundException {
         Product product = productDao.getProductById(id);
         if(product == null)
@@ -49,6 +66,21 @@ public class ProductService {
                 .name(product.getName())
                 .quantity(product.getQuantity())
                 .retailPrice(product.getRetailPrice())
+                .build();
+    }
+
+    @Transactional
+    public AdminProductDTO getAdminProductById(Long id) throws ResourceNotFoundException{
+        Product product = productDao.getProductById(id);
+        if(product == null)
+            throw new ResourceNotFoundException("Cannot find product with id " + id);
+        return AdminProductDTO.builder()
+                .id(product.getId())
+                .description(product.getDescription())
+                .name(product.getName())
+                .quantity(product.getQuantity())
+                .retailPrice(product.getRetailPrice())
+                .wholesalePrice(product.getWholesalePrice())
                 .build();
     }
 

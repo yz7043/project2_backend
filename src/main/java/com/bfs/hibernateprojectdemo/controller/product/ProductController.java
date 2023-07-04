@@ -2,10 +2,7 @@ package com.bfs.hibernateprojectdemo.controller.product;
 
 import com.bfs.hibernateprojectdemo.dto.base.BaseSuccessResponse;
 import com.bfs.hibernateprojectdemo.dto.common.StatusResponse;
-import com.bfs.hibernateprojectdemo.dto.product.AddProductRequest;
-import com.bfs.hibernateprojectdemo.dto.product.InStockProductsResponse;
-import com.bfs.hibernateprojectdemo.dto.product.UpdateProductRequest;
-import com.bfs.hibernateprojectdemo.dto.product.UserProductDTO;
+import com.bfs.hibernateprojectdemo.dto.product.*;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyDTO;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductFrequencyResponse;
 import com.bfs.hibernateprojectdemo.dto.stats.ProductRecentDto;
@@ -13,6 +10,7 @@ import com.bfs.hibernateprojectdemo.dto.stats.ProductRecentResponse;
 import com.bfs.hibernateprojectdemo.exception.ResourceNotFoundException;
 import com.bfs.hibernateprojectdemo.service.product.ProductService;
 import com.bfs.hibernateprojectdemo.service.user.UserService;
+import com.bfs.hibernateprojectdemo.utils.AuthUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -37,21 +35,36 @@ public class ProductController {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<InStockProductsResponse> getAllInStockProduct(){
-        List<UserProductDTO> products = productService.getAllProductForUser();
-        InStockProductsResponse response = InStockProductsResponse.builder()
-                                            .products(products)
-                                            .build();
-        return ResponseEntity.ok(response);
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
+    public ResponseEntity<?> getAllInStockProduct(){
+        if(AuthUserUtils.isUser()) {
+            List<UserProductDTO> products = productService.getAllProductForUser();
+            InStockProductsResponse response = InStockProductsResponse.builder()
+                    .products(products)
+                    .build();
+            return ResponseEntity.ok(response);
+        }else if(AuthUserUtils.isSeller()){
+            List<AdminProductDTO> products = productService.getAllProductForAdmin();
+            AllProductResponse response = AllProductResponse.builder().products(products)
+                    .build();
+            return ResponseEntity.ok(response);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('USER')")
-    public ResponseEntity<UserProductDTO> getProductById(@PathVariable("id") Long id)
+    @PreAuthorize("hasAuthority('USER') || hasAuthority('SELLER')")
+    public ResponseEntity<?> getProductById(@PathVariable("id") Long id)
             throws ResourceNotFoundException {
-        UserProductDTO product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+        if(AuthUserUtils.isUser()){
+            UserProductDTO product = productService.getProductById(id);
+            return ResponseEntity.ok(product);
+        } else if(AuthUserUtils.isSeller()){
+            AdminProductDTO product = productService.getAdminProductById(id);
+            return ResponseEntity.ok(product);
+        }else{
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping("/frequent/{limit}")

@@ -34,7 +34,7 @@ public class ProductService {
                 .map(product -> UserProductDTO.builder()
                         .id(product.getId())
                         .description(product.getDescription())
-                        .quantity(product.getQuantity())
+//                        .quantity(product.getQuantity())
                         .retailPrice(product.getRetailPrice())
                         .name(product.getName())
                         .build()).collect(Collectors.toList());
@@ -64,7 +64,7 @@ public class ProductService {
                 .id(product.getId())
                 .description(product.getDescription())
                 .name(product.getName())
-                .quantity(product.getQuantity())
+//                .quantity(product.getQuantity())
                 .retailPrice(product.getRetailPrice())
                 .build();
     }
